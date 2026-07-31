@@ -4,7 +4,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.Socket;
 
-//thread para ler o que o servidor enviou de volta
+//thread para ler a mensagem que o servidor enviou 
 public class ClienteThread extends Thread{
 	private Socket socket;
 	
@@ -16,17 +16,17 @@ public class ClienteThread extends Thread{
 	public void run() {
 		try {
 			
-			//obter o fluxo de entrada pelo socket e transoformar os bytes por meio do InputStreamReader
+			//obter o fluxo de entrada pelo socket e transoformar os bytes em String por meio do InputStreamReader
 			InputStreamReader inputReader = new InputStreamReader(socket.getInputStream());
 			
 			//usar um leitor de buffer pra facilitar a leitura
 			BufferedReader reader = new BufferedReader(inputReader);
 			
-			String mensagem;
+			String mensagemServidor;
 			
 			// ler e imprime a mensagem equanto houver texto
-			while((mensagem = reader.readLine()) != null) {
-				System.out.println(mensagem);//printar a mensagem que o servidor enviou
+			while((mensagemServidor = reader.readLine()) != null) {
+				System.out.println(mensagemServidor);//printar a mensagem que o servidor enviou
 			}
 		}catch(Exception ex) {
 			ex.printStackTrace();
