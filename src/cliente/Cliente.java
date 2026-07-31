@@ -13,7 +13,8 @@ public class Cliente {
 			Socket socket = new Socket("localhost",4000); //criar a conexao entre as maquinas
 			
 			Scanner scanner = new Scanner(System.in); //receber dados do teclado
-			
+
+			//thread responsavel por receber mensagens do servidor
 			ClienteThread clienteThread = new ClienteThread(socket);
 			clienteThread.start();
 
