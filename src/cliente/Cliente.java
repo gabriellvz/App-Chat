@@ -24,7 +24,7 @@ public class Cliente {
 			while(true) {
 				String teclado = scanner.nextLine();
 				saida.println(teclado);
-				//scanner.close();
+				//scanner.close(); 
 				
 			}
 			
