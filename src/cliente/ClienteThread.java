@@ -1,4 +1,6 @@
-package cliente;
+package clienteServidor;
+
+//package cliente;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -40,7 +42,14 @@ public class ClienteThread extends Thread{
 				System.out.println(mensagemServidor);//printar a mensagem que o servidor enviou
 			}
 		}catch(Exception ex) {
-			ex.printStackTrace();
+			//excecao para o caso de o socket ser fechado intencionalmente,nao faz nada,apenas encerra a thread de forma silenciosa
+			if(ex.getMessage() != null && ex.getMessage().contains("Socket closed")) {
+				
+				//excecao para um erro real
+			}else {
+				ex.printStackTrace();
+			}
+			
 		}
 	}
 
