@@ -1,7 +1,9 @@
-package cliente;
+package clienteServidor;
 
-import servidor.Servidor;
-import servidor.ServidorThread;
+//package cliente;
+
+//import servidor.Servidor;
+//import servidor.ServidorThread;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -77,8 +79,15 @@ public class Cliente {
 			while(true) {
 				String teclado = scanner.nextLine();
 				saida.println(teclado);
-				//scanner.close();
+				if(teclado.equalsIgnoreCase("/sair")) {
+					System.out.println("desconectando do chat...");
+					break;
+				}			
 			}
+			//fechamento dos recursos
+			socket.close();
+			scanner.close();
+			System.exit(0);
 			
 		}catch(UnknownHostException hostDesconhecido) {
 			hostDesconhecido.printStackTrace();
