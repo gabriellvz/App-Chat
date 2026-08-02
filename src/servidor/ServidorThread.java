@@ -1,6 +1,8 @@
-package servidor;
+package clienteServidor;
 
-import cliente.ClienteThread;
+//package servidor;
+
+//import cliente.ClienteThread;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -78,7 +80,11 @@ public class ServidorThread extends Thread{
     		while((mensagemDoCliente = reader.readLine()) !=null ) {
 
     			System.out.println(nomeUsuario + ": " + mensagemDoCliente );
-				Servidor.verificarComando(this, mensagemDoCliente);
+				boolean continuarNoChat = Servidor.verificarComando(this, mensagemDoCliente);//
+				
+				if(continuarNoChat==false) {//se o cliente quiser sair do chat ele sai do while e vai pro finally
+					break;
+				}
 				//Servidor.broadcast(nomeUsuario + ": " + mensagemDoCliente);
     			
     			//saida.println("servidor: " + mensagemDoCliente); essa linha deixa de ser necessaria pois o broadcast ja envia  a mensagem
@@ -86,7 +92,22 @@ public class ServidorThread extends Thread{
     		socket.close();
     		
     	}catch(IOException ex) {
-    		ex.printStackTrace();
+    		System.out.println("Conexao perdida com o cliente: " + nomeUsuario);
+    	}finally {
+    		if(nomeUsuario !=null) {
+    			Servidor.remover(this);//remove o cliente
+    			Servidor.broadcast(nomeUsuario+" saiu do chat!");//avisa a todos os clientes que aquele cliente saiu
+    			System.out.println(nomeUsuario+" foi desconectado do servidor");
+    		}
+    		//fechar o socket de forma segura
+    		try {
+    			if(socket!=null) {
+    				socket.close();
+    			}
+    			
+    		}catch(IOException ex) {
+    			ex.printStackTrace();
+    		}
     	}
     	
     }
