@@ -1,6 +1,8 @@
-package servidor;
+package clienteServidor;
 
-import cliente.ClienteThread;
+//package servidor;
+
+//import cliente.ClienteThread;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -16,7 +18,7 @@ public class Servidor {
 
 
 	// metodo responsavel por validar o comando digitado pelo usuario
-	public static void verificarComando (ServidorThread clienteConectado, String mensagem){
+	public static boolean verificarComando (ServidorThread clienteConectado, String mensagem){
 
 		String [] partes = mensagem.split(" ", 2); // divide a mensagem por espacos " " em duas partes
 		String nomeUsuario = clienteConectado.getNomeUsuario();
@@ -38,6 +40,8 @@ public class Servidor {
 						broadcast(nomeUsuario + ": " + partes[1]); // envia mensagem para broadcast
 					}
 					break;
+				case "/sair":
+					return false; //para parar de receber mensagens
 
 				// a mensagem tiver o marcador de comando '/' mas nao for um comando valido
 				default:
@@ -50,6 +54,7 @@ public class Servidor {
 		else {
 			clienteConectado.enviarMensagem("ERRO: Digite um comando valido.");
 		}
+		return true;//retorna verdadeiro pra continuar recebendo mensagens
 
 
 	}
