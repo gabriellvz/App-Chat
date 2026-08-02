@@ -13,8 +13,6 @@ public class ClienteThread extends Thread{
 	private BufferedReader reader;
 	//private String nomeUsuario;
 
-
-	
 	public ClienteThread(Socket socket, BufferedReader reader) {
 		this.socket = socket;
 		this.reader = reader;

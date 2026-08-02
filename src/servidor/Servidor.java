@@ -10,29 +10,66 @@ import java.util.Scanner;
 
 public class Servidor {
 
+
+	// lista estatica para armazenar clientes conectados ao servidor
 	static ArrayList<ServidorThread> clientesConectados = new ArrayList<>();
 
 
-	public static void verificarComando (String mensagem){
-		String [] partes = mensagem.split(" ", 3); // divide a mensagem
+	// metodo responsavel por validar o comando digitado pelo usuario
+	public static void verificarComando (ServidorThread clienteConectado, String mensagem){
 
-		if (partes[0].equals("/listar")) {
-			listarUsuariosConectados();
+		String [] partes = mensagem.split(" ", 2); // divide a mensagem por espacos " " em duas partes
+		String nomeUsuario = clienteConectado.getNomeUsuario();
+
+		// "/" caracter que marca um comando
+		if (mensagem.startsWith("/")){
+
+			switch (partes[0]){
+
+				case "/listar":
+					clienteConectado.enviarMensagem(listarUsuariosConectados()); // tem que ser so para o cliente
+					break;
+
+				case "/msg":
+					if (partes.length < 2 || partes[1].trim().isEmpty()){ // trim remove espacos, is empty verifica se o tamanho eh 0
+						clienteConectado.enviarMensagem("ERRO: Digite uma mensagem apos /msg.");
+					}
+					else{
+						broadcast(nomeUsuario + ": " + partes[1]); // envia mensagem para broadcast
+					}
+					break;
+
+				// a mensagem tiver o marcador de comando '/' mas nao for um comando valido
+				default:
+					clienteConectado.enviarMensagem("ERRO: Digite um comando valido.");
+					break;
+			}
+
 		}
+		// se a mensagem nao for um comando
+		else {
+			clienteConectado.enviarMensagem("ERRO: Digite um comando valido.");
+		}
+
+
 	}
 
 
 	// metodo responsavel por listar nomes dos usuarios conectados
-	public static void listarUsuariosConectados(){
-		System.out.println("Usuarios conectados:");
-		int i = 0;
+	public static String listarUsuariosConectados(){
+		StringBuilder sb = new StringBuilder(); // stringBuilder serve para formatar saidas convertidas para string
+		int i = 0; // indice
+		sb.append("\nUsuarios conectados: " + "\n");
 		for (ServidorThread c : clientesConectados){
 			i++;
-			System.out.println(i + ". " + c.getNomeUsuario());
+			sb.append(i + ". " + c.getNomeUsuario() + "\n");
+			//System.out.println(i + ". " + c.getNomeUsuario());
 		}
+		return sb.toString(); // retorna um objeto sb que converte a saida para string
 	}
 
 
+	// metodo responsavel por retornar um boolean para saber se um nome ja esta presente na lista
 	public static boolean nomeJaExiste (String nome){
 		for (ServidorThread c : clientesConectados){
 			if (nome.equalsIgnoreCase(c.getNomeUsuario())){ // equalsIgnoreCase compara desconsiderando entre maiusculas e minusculas

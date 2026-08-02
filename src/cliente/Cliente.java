@@ -20,9 +20,10 @@ public class Cliente {
 				"/listar - Retorna uma lista com todos os usuarios conectados no chat.\n" +
 				"/msg - Envia uma mensagem\n" +
 				"/criar_sala - Cria uma sala de chat privado.\n" +
-				"Obs: Para utilizar o comando de criar sala eh necessario utilizar o formato:" +
-				" criar_sala@nome_usuario\n" +
-				"/sair - O usuario sera desconectado do chat.\n\n";
+				"/sair - O usuario sera desconectado do chat.\n\n" +
+				"Instrucoes adicionais:\n" +
+				"1. Para utilizar o comando /msg eh necessario utilizar o formato: /msg_mensagem\n" +
+				"2. Para utilizar o comando /criar_sala eh necessario utilizar o formato: /criar_sala@nomeUsuario\n";
 
 	}
 
@@ -45,7 +46,6 @@ public class Cliente {
 
 			//criar um leitor de buffer para facilitar a leitura
 			BufferedReader reader = new BufferedReader(inputReader);
-
 
 			System.out.println(menu());
 			while (true){

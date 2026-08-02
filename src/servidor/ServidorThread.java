@@ -55,19 +55,20 @@ public class ServidorThread extends Thread{
 			while (true){
 				this.nomeUsuario = reader.readLine();
 
+				// se o nome de usuario for nulo, o socket sera fechado
 				if (nomeUsuario == null){
 					socket.close();
 					return; // encerra o run
 				}
 
 				if (Servidor.nomeJaExiste(nomeUsuario)){
-					saida.println("NOME_EM_USO");
+					saida.println("NOME_EM_USO"); // msg para o socket
 				}
 				else {
 					//adiciona o objeto atual a lista de servidorThread
 					Servidor.adicionar(this);
-					//Servidor.listarUsuariosConectados();
-					saida.println("NOME_ACEITO");
+					System.out.println(Servidor.listarUsuariosConectados()); // retorna usuarios no servidor sempre que um novo se conectar
+					saida.println("NOME_ACEITO"); // msg para o socket
 					Servidor.broadcast(this.nomeUsuario + " entrou no chat.");
 					break;
 				}
@@ -77,8 +78,8 @@ public class ServidorThread extends Thread{
     		while((mensagemDoCliente = reader.readLine()) !=null ) {
 
     			System.out.println(nomeUsuario + ": " + mensagemDoCliente );
-				//Servidor.verificarComando(mensagemDoCliente);
-				Servidor.broadcast(nomeUsuario + ": " + mensagemDoCliente);
+				Servidor.verificarComando(this, mensagemDoCliente);
+				//Servidor.broadcast(nomeUsuario + ": " + mensagemDoCliente);
     			
     			//saida.println("servidor: " + mensagemDoCliente); essa linha deixa de ser necessaria pois o broadcast ja envia  a mensagem
     		}
