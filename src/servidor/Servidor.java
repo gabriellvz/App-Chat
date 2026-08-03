@@ -1,8 +1,10 @@
-package clienteServidor;
+//package clienteServidor;
 
-//package servidor;
+package servidor;
 
 //import cliente.ClienteThread;
+
+import protocolo.TipoMensagem;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -34,25 +36,26 @@ public class Servidor {
 
 				case "/msg":
 					if (partes.length < 2 || partes[1].trim().isEmpty()){ // trim remove espacos, is empty verifica se o tamanho eh 0
-						clienteConectado.enviarMensagem("ERRO: Digite uma mensagem apos /msg.");
+						clienteConectado.enviarMensagem(TipoMensagem.ERRO + "Digite uma mensagem apos /msg.");
 					}
 					else{
-						broadcast(nomeUsuario + ": " + partes[1]); // envia mensagem para broadcast
+						broadcast(TipoMensagem.GERAL + "<" + nomeUsuario + "> " + partes[1]); // envia mensagem para broadcast
 					}
 					break;
+
 				case "/sair":
 					return false; //para parar de receber mensagens
 
 				// a mensagem tiver o marcador de comando '/' mas nao for um comando valido
 				default:
-					clienteConectado.enviarMensagem("ERRO: Digite um comando valido.");
+					clienteConectado.enviarMensagem(TipoMensagem.ERRO + "Digite um comando valido.");
 					break;
 			}
 
 		}
 		// se a mensagem nao for um comando
 		else {
-			clienteConectado.enviarMensagem("ERRO: Digite um comando valido.");
+			clienteConectado.enviarMensagem(TipoMensagem.ERRO + "Digite um comando valido.");
 		}
 		return true;//retorna verdadeiro pra continuar recebendo mensagens
 
@@ -64,7 +67,7 @@ public class Servidor {
 	public static String listarUsuariosConectados(){
 		StringBuilder sb = new StringBuilder(); // stringBuilder serve para formatar saidas convertidas para string
 		int i = 0; // indice
-		sb.append("\nUsuarios conectados: " + "\n");
+		sb.append("\n" + TipoMensagem.LISTA + "Usuarios conectados: " + "\n");
 		for (ServidorThread c : clientesConectados){
 			i++;
 			sb.append(i + ". " + c.getNomeUsuario() + "\n");
@@ -107,7 +110,7 @@ public class Servidor {
         	ServerSocket serverSocket = new ServerSocket(4000);//inicia um servidor de rede e abre a porta 4000 para se conectar com um cliente
     		while(true) {
 
-    			System.out.println("servidor aguardando conexao!");
+    			System.out.println(TipoMensagem.SERVIDOR + "aguardando conexao...");
         		
         		Socket socket = serverSocket.accept();//pausa a execucao, espera um cliente se conectar e retorna um socket
 
@@ -115,7 +118,7 @@ public class Servidor {
         		servidorThread.start();
 
         		
-        		System.out.println("cliente se conectou!");
+        		System.out.println(TipoMensagem.SERVIDOR + "um cliente se conectou.");
 
         		//serverSocket.close(); criar um if para fechar a conexao
     		}		

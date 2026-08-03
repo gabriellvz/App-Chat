@@ -1,8 +1,10 @@
-package clienteServidor;
+//package clienteServidor;
 
-//package servidor;
+package servidor;
 
 //import cliente.ClienteThread;
+
+import protocolo.TipoMensagem;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -71,7 +73,7 @@ public class ServidorThread extends Thread{
 					Servidor.adicionar(this);
 					System.out.println(Servidor.listarUsuariosConectados()); // retorna usuarios no servidor sempre que um novo se conectar
 					saida.println("NOME_ACEITO"); // msg para o socket
-					Servidor.broadcast(this.nomeUsuario + " entrou no chat.");
+					Servidor.broadcast(TipoMensagem.INFO + this.nomeUsuario + " entrou no chat.");
 					break;
 				}
 			}
@@ -79,7 +81,7 @@ public class ServidorThread extends Thread{
     		// ler e imprime a mensagem equanto houver texto
     		while((mensagemDoCliente = reader.readLine()) !=null ) {
 
-    			System.out.println(nomeUsuario + ": " + mensagemDoCliente );
+    			System.out.println(TipoMensagem.CLIENTE + nomeUsuario + ": " + mensagemDoCliente );
 				boolean continuarNoChat = Servidor.verificarComando(this, mensagemDoCliente);//
 				
 				if(continuarNoChat==false) {//se o cliente quiser sair do chat ele sai do while e vai pro finally
@@ -91,13 +93,15 @@ public class ServidorThread extends Thread{
     		}
     		socket.close();
     		
-    	}catch(IOException ex) {
-    		System.out.println("Conexao perdida com o cliente: " + nomeUsuario);
-    	}finally {
+    	} catch(IOException ex) {
+    		System.out.println(TipoMensagem.SERVIDOR + "Conexao perdida com o cliente: " + nomeUsuario);
+
+    	} finally {
+
     		if(nomeUsuario !=null) {
     			Servidor.remover(this);//remove o cliente
-    			Servidor.broadcast(nomeUsuario+" saiu do chat!");//avisa a todos os clientes que aquele cliente saiu
-    			System.out.println(nomeUsuario+" foi desconectado do servidor");
+    			Servidor.broadcast(TipoMensagem.INFO + nomeUsuario + " saiu do chat!");//avisa a todos os clientes que aquele cliente saiu
+    			System.out.println(TipoMensagem.SERVIDOR + nomeUsuario + " foi desconectado do servidor");
     		}
     		//fechar o socket de forma segura
     		try {

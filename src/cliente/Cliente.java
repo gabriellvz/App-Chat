@@ -1,6 +1,6 @@
-package clienteServidor;
+//package clienteServidor;
 
-//package cliente;
+package cliente;
 
 //import servidor.Servidor;
 //import servidor.ServidorThread;
@@ -9,35 +9,22 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
+import java.net.ConnectException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Scanner;
+import protocolo.TipoMensagem;
+import protocolo.UI;
 
 public class Cliente {
 
-	public static String menu(){
-		return  "Bem vindo ao zap zap 2.0\n\n" +
-				"Comandos  disponiveis:\n\n" +
-				"/listar - Retorna uma lista com todos os usuarios conectados no chat.\n" +
-				"/msg - Envia uma mensagem\n" +
-				"/criar_sala - Cria uma sala de chat privado.\n" +
-				"/sair - O usuario sera desconectado do chat.\n\n" +
-				"Instrucoes adicionais:\n" +
-				"1. Para utilizar o comando /msg eh necessario utilizar o formato: /msg_mensagem\n" +
-				"2. Para utilizar o comando /criar_sala eh necessario utilizar o formato: /criar_sala@nomeUsuario\n";
-
-	}
 
 	public static void main(String[] args) {
 		try {
 			Socket socket = new Socket("localhost",4000); //criar a conexao entre as maquinas
 			
 			Scanner scanner = new Scanner(System.in); //receber dados do teclado
-
-
-			//ClienteThread clienteThread = new ClienteThread(socket);
-			//clienteThread.start();
 
 			// converter a String para bytes e manda eles pro outputStream
 			PrintStream saida = new PrintStream(socket.getOutputStream());
@@ -49,9 +36,11 @@ public class Cliente {
 			//criar um leitor de buffer para facilitar a leitura
 			BufferedReader reader = new BufferedReader(inputReader);
 
-			System.out.println(menu());
+			//imprimirLinha();
+			//System.out.println(menu());
+			UI.imprimirMenu();
 			while (true){
-				System.out.print("Digite seu nome/apelido: ");
+				System.out.print((TipoMensagem.LOGIN) + "Digite seu nome/apelido: ");
 				String nomeUsuario = scanner.nextLine(); // le do teclado
 
 				// envia o nome de usuario para o servidor por meio do socket.getOutputStream
@@ -61,12 +50,11 @@ public class Cliente {
 
 				// caso o nome for aceito encerra o loop imediatamente
 				if (resposta.equals("NOME_ACEITO")){
-					System.out.println("O nome foi aceito.");
-					//nomeUsuario = scanner.nextLine(); // le do teclado
+					System.out.println(TipoMensagem.LOGIN + "O nome foi aceito.");
 					break;
 				}
 				else{
-					System.out.println("O nome ja esta em uso. Digite novamente um nome valido.");
+					System.out.println(TipoMensagem.LOGIN + "O nome ja esta em uso. Digite novamente um nome valido.");
 				}
 
 			}
@@ -77,7 +65,9 @@ public class Cliente {
 
 			// permite continuar lendo varias mensagens
 			while(true) {
+				//System.out.print("> ");
 				String teclado = scanner.nextLine();
+
 				saida.println(teclado);
 				if(teclado.equalsIgnoreCase("/sair")) {
 					System.out.println("desconectando do chat...");
@@ -94,9 +84,7 @@ public class Cliente {
 			
 		}catch(IOException entradaSaida) {
 			entradaSaida.printStackTrace();
-		}	
 
-	} 
-	
-
+		}
+	}
 }

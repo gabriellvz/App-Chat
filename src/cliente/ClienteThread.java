@@ -1,6 +1,6 @@
-package clienteServidor;
+//package clienteServidor;
 
-//package cliente;
+package cliente;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -39,7 +39,9 @@ public class ClienteThread extends Thread{
 
 			// ler e imprime a mensagem equanto houver texto
 			while((mensagemServidor = reader.readLine()) != null) {
+				//System.out.println();
 				System.out.println(mensagemServidor);//printar a mensagem que o servidor enviou
+				//System.out.print("> ");
 			}
 		}catch(Exception ex) {
 			//excecao para o caso de o socket ser fechado intencionalmente,nao faz nada,apenas encerra a thread de forma silenciosa
