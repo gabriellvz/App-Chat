@@ -4,13 +4,19 @@ package servidor;
 
 //import cliente.ClienteThread;
 
-import protocolo.TipoMensagem;
+//import protocolo.TipoMensagem;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Scanner;
+
+import cliente.ClienteThread;
+import protocolo.TipoMensagem;
+
+
+
+
 
 public class Servidor {
 
@@ -27,8 +33,25 @@ public class Servidor {
 
 		// "/" caracter que marca um comando
 		if (mensagem.startsWith("/")){
-
-			switch (partes[0]){
+			
+			if(partes[0].startsWith("/crs@")) {//verifica se eh uma mensagem privada
+				String destinatario = partes[0].substring(5);//corta os cinco primeiros caracteres pra pegar apenas o nome do destinatario
+				
+				//verfificar se o cliente nao digitou nada(tamanho de partes<2) ou se ele digitou apenas espacos em branco
+				if(partes.length < 2 || partes[1].trim().isEmpty()) {
+					clienteConectado.enviarMensagem(TipoMensagem.ERRO+"erro! digie uma mensagem apos o nome");
+				}else {
+					//tenta enviar a mensagem
+					boolean mensagemChegou = enviarMensagemPrivada(nomeUsuario,destinatario,partes[1]);
+					
+					if(mensagemChegou==true) {//se a mensagem chegou ele confirma pro rementente
+						clienteConectado.enviarMensagem(TipoMensagem.PRIVADO+"voce para <" + destinatario + "> " + partes[1]);
+					}else {//se a mensagem nao chegou ele confirma pro rementente
+						clienteConectado.enviarMensagem(TipoMensagem.ERRO+destinatario+" nao encontrado");
+					}
+				}
+			}else {// se nao for uma mensagem privada continua procurando nos outro comandos
+				switch (partes[0]){
 
 				case "/listar":
 					clienteConectado.enviarMensagem(listarUsuariosConectados()); // tem que ser so para o cliente
@@ -52,6 +75,10 @@ public class Servidor {
 					break;
 			}
 
+				
+			}
+
+	
 		}
 		// se a mensagem nao for um comando
 		else {
@@ -70,7 +97,7 @@ public class Servidor {
 		sb.append("\n" + TipoMensagem.LISTA + "Usuarios conectados: " + "\n");
 		for (ServidorThread c : clientesConectados){
 			i++;
-			sb.append(i + ". " + c.getNomeUsuario() + "\n");
+			sb.append(i + ". " + c.getNomeUsuario()+ "\n");
 			//System.out.println(i + ". " + c.getNomeUsuario());
 		}
 		return sb.toString(); // retorna um objeto sb que converte a saida para string
@@ -102,6 +129,15 @@ public class Servidor {
 		for (ServidorThread c : clientesConectados){
 			c.enviarMensagem(mensagem);
 		}
+	}
+	
+	public static boolean enviarMensagemPrivada(String remetente,String destinatario,String mensagem) {
+		for(ServidorThread cliente : clientesConectados) {//percorre a lista de clientes conectados e envia mensagem somente pro que tiver o nome correspondente
+			if(cliente.getNomeUsuario().equalsIgnoreCase(destinatario)) {
+				cliente.enviarMensagem(TipoMensagem.PRIVADO + remetente+" "+mensagem);
+				return true;
+			}
+		}return false;//se nao encontrar ninguem retorna falso
 	}
 
 
