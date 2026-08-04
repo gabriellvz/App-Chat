@@ -1,7 +1,14 @@
 package protocolo;
 
-// clase responsavel por definir metodos para o menu inicial do chat
+// clase responsavel por definir metodos utilitarios para o menu inicial do chat
 public class UI {
+
+    // codigos ANSI para diferentes cores
+    private static final String RESETAR_COR = "\u001B[0m"; //codigo para resetar estilos
+    private static final String COR_VERMELHO = "\u001B[31m";
+    private static final String COR_VERDE = "\u001B[32m";
+    private static final String COR_AMARELO = "\u001B[33m";
+    private static final String COR_AZUL = "\u001B[34m";
 
     //imprimeLinha
     private static void imprimirLinha(){
@@ -22,7 +29,7 @@ public class UI {
 
     // imprime espacos
     private static void imprimirEspacos(int nEspacos){
-        for (int i=0; i<nEspacos; i++){
+        for (int i=0; i < nEspacos; i++){
             System.out.print(" ");
         }
     }
@@ -77,4 +84,19 @@ public class UI {
         imprimirInstrucoes();
         System.out.println();
     }
+
+    public static String estilizarMensagem (TipoMensagem t ,String mensagem){
+        switch (t){
+            case ERRO:
+                return UI.COR_VERMELHO + mensagem + UI.RESETAR_COR;
+
+            case CLIENTE:
+                return UI.COR_AMARELO + "<"+ mensagem +"> " + UI.RESETAR_COR;
+
+            case SERVIDOR:
+                return UI.COR_VERDE + mensagem + UI.RESETAR_COR;
+        }
+        return mensagem;
+    }
+
 }

@@ -11,6 +11,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import protocolo.TipoMensagem;
+import protocolo.UI;
 
 public class Servidor {
 
@@ -56,7 +57,7 @@ public class Servidor {
 						clienteConectado.enviarMensagem(TipoMensagem.ERRO + "Digite uma mensagem apos /msg.");
 					}
 					else{
-						broadcast(TipoMensagem.GERAL + "\u001B[33m<" + nomeUsuario + ">\u001B[0m " + partes[1]); // envia mensagem para broadcast
+						broadcast(TipoMensagem.GERAL +  UI.estilizarMensagem(TipoMensagem.CLIENTE, nomeUsuario) + partes[1]); // envia mensagem para broadcast
 					}
 					break;
 
