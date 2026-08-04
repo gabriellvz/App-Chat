@@ -1,6 +1,6 @@
 package protocolo;
 
-// classe responsavel por especificar os tipos de mensagens que seria enviadas
+// classe responsavel por especificar os tipos de mensagens que serao enviadas
 public enum TipoMensagem {
 
     LOGIN,
