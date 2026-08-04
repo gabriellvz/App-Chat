@@ -29,7 +29,7 @@ public class Servidor {
 			
 			if(mensagem.startsWith("/crs@")) { //verifica se eh uma mensagem privada
 				 //corta os cinco primeiros caracteres pra pegar apenas o nome do destinatario
-				String [] partesChatPrivado = mensagem.split("_",2);
+				String [] partesChatPrivado = mensagem.split(" ",2);
  				//verfificar se o cliente nao digitou nada(tamanho de partes<2) ou se ele digitou apenas espacos em branco
 				if(partesChatPrivado.length < 2 || partesChatPrivado[1].trim().isEmpty()) {
 					clienteConectado.enviarMensagem(TipoMensagem.ERRO+  UI.estilizarMensagem('R',"Digite no formato: /crs@nome_mensagem"));
