@@ -33,6 +33,51 @@ public class Cliente {
 		}
 	}
 
+	// metodo para receber a validacao do nome que foi feita pelo servidor
+	public static void receberRespostaDoServidor(Scanner scanner, PrintStream saida, BufferedReader reader) throws IOException {
+
+		parar: // rotulo para indicar qual break deve encerrar o loop
+		while (true){
+			System.out.print((TipoMensagem.LOGIN) + UI.estilizarMensagem('G',"Digite seu nome/apelido: "));
+			String nomeUsuario = scanner.nextLine(); // le do teclado
+
+			// envia o nome de usuario para o servidor por meio do socket.getOutputStream
+			saida.println(nomeUsuario);
+
+			String resposta = reader.readLine(); // le mensagem do socket
+
+			switch (resposta) {
+				case "NOME_VAZIO":
+					System.out.println(TipoMensagem.ERRO + UI.estilizarMensagem('R', "Nao eh permitido digitar nome vazio."));
+					break;
+
+				case "FORMATO_INCORRETO":
+					System.out.println(TipoMensagem.ERRO + UI.estilizarMensagem('R', "Nao eh permitido utilizar formato de comandos para o nome."));
+					break;
+
+				// caso o nome for aceito encerra o loop imediatamente
+				case "NOME_ACEITO":
+					System.out.println(TipoMensagem.LOGIN + UI.estilizarMensagem('G', "O nome foi aceito."));
+					System.out.println("\n" + TipoMensagem.INFO + UI.estilizarMensagem('Y', "[CONECTADO COMO " + nomeUsuario.toUpperCase() + "]\n"));
+					break parar;
+
+				// se o nome estiver em uso
+				case "NOME_EM_USO":
+					System.out.println(TipoMensagem.ERRO + UI.estilizarMensagem('R', "O nome ja esta em uso. Digite novamente um nome valido."));
+					break;
+
+				case "NOME_LONGO":
+					System.out.println(TipoMensagem.ERRO + UI.estilizarMensagem('R', "O maximo de caracteres eh 20."));
+					break;
+
+				case "NOME_COM_ESPACO":
+					System.out.println(TipoMensagem.ERRO + UI.estilizarMensagem('R', "Nomes com espaco nao sao permitidos."));
+					break;
+			}
+		}
+	}
+
+
 	public static void main(String[] args) {
 
 		Socket socket;
@@ -55,28 +100,10 @@ public class Cliente {
 			//criar um leitor de buffer para facilitar a leitura
 			BufferedReader reader = new BufferedReader(inputReader);
 
-			while (true){
-				System.out.print((TipoMensagem.LOGIN) + UI.estilizarMensagem('G',"Digite seu nome/apelido: "));
-				String nomeUsuario = scanner.nextLine(); // le do teclado
+			// envia o nome de usuario para ser validados e le a resposta do servidor
+			receberRespostaDoServidor(scanner, saida, reader);
 
-				// envia o nome de usuario para o servidor por meio do socket.getOutputStream
-				saida.println(nomeUsuario);
-
-				String resposta = reader.readLine(); // le mensagem do socket
-
-				// caso o nome for aceito encerra o loop imediatamente
-				if (resposta.equals("NOME_ACEITO")){
-					System.out.println(TipoMensagem.LOGIN + UI.estilizarMensagem('G',"O nome foi aceito."));
-					System.out.println("\n" + TipoMensagem.INFO + UI.estilizarMensagem('Y', "[CONECTADO COMO "  + nomeUsuario.toUpperCase() + "]\n"));
-					break;
-				}
-				else{
-					System.out.println(TipoMensagem.ERRO + UI.estilizarMensagem('R',"O nome ja esta em uso. Digite novamente um nome valido."));
-				}
-
-			}
-
-			//thread responsavel por receber mensagens do servidor
+            //thread responsavel por receber mensagens do servidor
 			ClienteThread clienteThread = new ClienteThread(socket,reader);
 			clienteThread.start();
 
@@ -91,6 +118,7 @@ public class Cliente {
 					break;
 				}			
 			}
+
 			//fechamento dos recursos
 			socket.close();
 			scanner.close();

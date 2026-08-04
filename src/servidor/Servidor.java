@@ -7,8 +7,10 @@ package servidor;
 //import protocolo.TipoMensagem;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import protocolo.TipoMensagem;
 import protocolo.UI;
@@ -131,10 +133,10 @@ public class Servidor {
 	}
 
 	public static void main(String[] args) {
+
         try {
         	ServerSocket serverSocket = new ServerSocket(4000);//inicia um servidor de rede e abre a porta 4000 para se conectar com um cliente
-    		while(true) {
-
+			while(true) {
     			System.out.println(UI.estilizarMensagem('G',TipoMensagem.SERVIDOR + "aguardando conexao..."));
         		
         		Socket socket = serverSocket.accept();//pausa a execucao, espera um cliente se conectar e retorna um socket

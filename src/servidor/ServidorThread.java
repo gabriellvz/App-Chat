@@ -51,9 +51,28 @@ public class ServidorThread extends Thread{
 				return; // encerra o run
 			}
 
-			if (Servidor.nomeJaExiste(this.nomeUsuario)){
+			else if (this.nomeUsuario.trim().isEmpty()){
+				//enviarMensagem(TipoMensagem.ERRO + UI.estilizarMensagem('R', "Nao eh permitido utilizar formato de comandos para nome."));
+				saida.println("NOME_VAZIO");
+				//System.out.println(TipoMensagem.ERRO + UI.estilizarMensagem('R', "Nao eh "));
+			}
+
+			else if (this.nomeUsuario.trim().startsWith("/")){
+				saida.println("FORMATO_INCORRETO");
+			}
+
+			else if (Servidor.nomeJaExiste(this.nomeUsuario)){
 				saida.println("NOME_EM_USO"); // msg para o socket
 			}
+
+			else if (this.nomeUsuario.length() >= 20){
+				saida.println("NOME_LONGO");
+			}
+
+			else if (this.nomeUsuario.contains(" ")){
+				saida.println("NOME_COM_ESPACO");
+			}
+
 			else {
 				//adiciona o objeto atual a lista de servidorThread
 				Servidor.adicionar(this);
@@ -104,7 +123,7 @@ public class ServidorThread extends Thread{
 
     		if(this.nomeUsuario !=null) {
     			Servidor.remover(this);//remove o cliente
-    			Servidor.broadcast(UI.estilizarMensagem('G',TipoMensagem.INFO + this.nomeUsuario + " saiu do chat!"));//avisa a todos os clientes que aquele cliente saiu
+    			Servidor.broadcast(TipoMensagem.INFO + UI.estilizarMensagem('G',  this.nomeUsuario + " saiu do chat!"));//avisa a todos os clientes que aquele cliente saiu
     			System.out.println(UI.estilizarMensagem('G',TipoMensagem.SERVIDOR + this.nomeUsuario + " foi desconectado do servidor")); //mostrar no servidor que o cliente foi desconectado
     		}
     		//fechar o socket de forma segura
