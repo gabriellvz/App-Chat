@@ -24,7 +24,7 @@ public class ClienteThread extends Thread{
 			}
 		}catch(Exception ex) {
 			//excecao para o caso de o socket ser fechado intencionalmente,nao faz nada,apenas encerra a thread de forma silenciosa
-			if(ex.getMessage() != null && ex.getMessage().contains("Socket closed")) {
+			if(ex.getMessage() != null && ex.getMessage().contains("Socket closed") || ex.getMessage().contains("Connection reset")) {
 				
 				//excecao para um erro real
 			}else {
