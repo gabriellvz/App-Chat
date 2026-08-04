@@ -19,7 +19,10 @@ public class ServidorThread extends Thread{
 	private Socket socket;
 	private String nomeUsuario;
 
+	private String IP;
 	private PrintStream saida;
+
+	private BufferedReader reader;
 
 	public ServidorThread(Socket socket){
 		this.socket = socket;
@@ -30,6 +33,10 @@ public class ServidorThread extends Thread{
 		return this.nomeUsuario;
 	}
 
+	public String getIP (){
+		return this.IP;
+	}
+
 	public void setNomeUsuario (String nomeUsuario){
 		this.nomeUsuario = nomeUsuario;
 	}
@@ -38,6 +45,33 @@ public class ServidorThread extends Thread{
 	public void enviarMensagem (String mensagem){
 		this.saida.println(mensagem);
 	}
+
+	public void validarNome (BufferedReader reader) throws IOException {
+		// loop responsavel por verificar um nome ate que ele seja valido
+		while (true){
+			this.nomeUsuario = reader.readLine();
+
+			// se o nome de usuario for nulo, o socket sera fechado
+			if (this.nomeUsuario == null){
+				socket.close();
+				return; // encerra o run
+			}
+
+			if (Servidor.nomeJaExiste(this.nomeUsuario)){
+				saida.println("NOME_EM_USO"); // msg para o socket
+			}
+			else {
+				//adiciona o objeto atual a lista de servidorThread
+				Servidor.adicionar(this);
+				System.out.println(Servidor.listarUsuariosConectados()); // retorna usuarios no servidor sempre que um novo se conectar
+				saida.println("NOME_ACEITO"); // msg para o socket
+				Servidor.broadcast(TipoMensagem.INFO + this.nomeUsuario + " entrou no chat.");
+				break;
+			}
+		}
+
+	}
+
 	
     @Override
     public void run() {
@@ -48,43 +82,20 @@ public class ServidorThread extends Thread{
     		InputStreamReader inputReader = new InputStreamReader(socket.getInputStream());
     		
     		//criar um leitor de buffer para facilitar a leitura
-    		BufferedReader reader = new BufferedReader(inputReader);
+    		reader = new BufferedReader(inputReader);
     		
     		//enviar mensagem pro cliente
     		saida = new PrintStream(socket.getOutputStream());
     		
+			validarNome(reader);
+
     		String mensagemDoCliente;
-
-			// loop responsavel por verificar um nome ate que ele seja valido
-			while (true){
-				this.nomeUsuario = reader.readLine();
-
-				// se o nome de usuario for nulo, o socket sera fechado
-				if (nomeUsuario == null){
-					socket.close();
-					return; // encerra o run
-				}
-
-				if (Servidor.nomeJaExiste(nomeUsuario)){
-					saida.println("NOME_EM_USO"); // msg para o socket
-				}
-				else {
-					//adiciona o objeto atual a lista de servidorThread
-					Servidor.adicionar(this);
-					System.out.println(Servidor.listarUsuariosConectados()); // retorna usuarios no servidor sempre que um novo se conectar
-					saida.println("NOME_ACEITO"); // msg para o socket
-					Servidor.broadcast(TipoMensagem.INFO + this.nomeUsuario + " entrou no chat.");
-					break;
-				}
-			}
-
     		// ler e imprime a mensagem equanto houver texto
     		while((mensagemDoCliente = reader.readLine()) !=null ) {
-
-    			System.out.println(TipoMensagem.CLIENTE + nomeUsuario + ": " + mensagemDoCliente );
+				System.out.println(TipoMensagem.CLIENTE + nomeUsuario + ": " + mensagemDoCliente );
 				boolean continuarNoChat = Servidor.verificarComando(this, mensagemDoCliente);//
 				
-				if(continuarNoChat==false) {//se o cliente quiser sair do chat ele sai do while e vai pro finally
+				if(!continuarNoChat) {//se o cliente quiser sair do chat ele sai do while e vai pro finally
 					break;
 				}
 				//Servidor.broadcast(nomeUsuario + ": " + mensagemDoCliente);

@@ -22,9 +22,19 @@ public class Cliente {
 
 	public static void main(String[] args) {
 		try {
-			Socket socket = new Socket("localhost",4000); //criar a conexao entre as maquinas
-			
+
+			UI.imprimirMenu();
 			Scanner scanner = new Scanner(System.in); //receber dados do teclado
+//			while(true){
+//
+//				System.out.println("Digite o numero IP para se conectar ao servidor: ");
+//				String numeroIP = scanner.nextLine();
+//
+//
+//
+//			}
+
+			Socket socket = new Socket("localhost",4000); //criar a conexao entre as maquinas
 
 			// converter a String para bytes e manda eles pro outputStream
 			PrintStream saida = new PrintStream(socket.getOutputStream());
@@ -36,9 +46,10 @@ public class Cliente {
 			//criar um leitor de buffer para facilitar a leitura
 			BufferedReader reader = new BufferedReader(inputReader);
 
+
+
 			//imprimirLinha();
 			//System.out.println(menu());
-			UI.imprimirMenu();
 			while (true){
 				System.out.print((TipoMensagem.LOGIN) + "Digite seu nome/apelido: ");
 				String nomeUsuario = scanner.nextLine(); // le do teclado
@@ -46,7 +57,7 @@ public class Cliente {
 				// envia o nome de usuario para o servidor por meio do socket.getOutputStream
 				saida.println(nomeUsuario);
 
-				String resposta = reader.readLine();
+				String resposta = reader.readLine(); // le mensagem do socket
 
 				// caso o nome for aceito encerra o loop imediatamente
 				if (resposta.equals("NOME_ACEITO")){
