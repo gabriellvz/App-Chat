@@ -161,6 +161,11 @@ public class Servidor {
 
         		//serverSocket.close(); criar um if para fechar a conexao
     		}		
+        }catch(java.net.BindException portaOcupada) {
+        	System.out.println("A porta ja esta em uso! verifique se voce nao deixou o servidor rodando em outro terminal");
+
+        	
+        	
 		}catch(IOException ex) {
 			ex.printStackTrace();
 			
