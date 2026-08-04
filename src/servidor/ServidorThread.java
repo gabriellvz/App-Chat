@@ -20,6 +20,7 @@ import protocolo.TipoMensagem;
 public class ServidorThread extends Thread{
 	private Socket socket;
 	private String nomeUsuario;
+	private boolean conectado = true;
 
 	private PrintStream saida;
 
@@ -34,6 +35,13 @@ public class ServidorThread extends Thread{
 
 	public void setNomeUsuario (String nomeUsuario){
 		this.nomeUsuario = nomeUsuario;
+	}
+	public boolean getConectado(boolean conectado) {
+		return this.conectado;
+	}
+	//metodo usado quando o cliente pedir para sair do chat
+	public void desconectar() {
+		this.conectado=false;
 	}
 
 	// metodo responsavel por enviar uma mensagem pelo sokcet
@@ -80,13 +88,13 @@ public class ServidorThread extends Thread{
 				}
 			}
 
-    		// ler e imprime a mensagem equanto houver texto
-    		while((mensagemDoCliente = reader.readLine()) !=null ) {
+    		// imprime a mensagem do cliente enquanto ele estiver conectado e tiver texto pta ler
+    		while( conectado==true && ( mensagemDoCliente = reader.readLine() ) !=null ) {
 
     			System.out.println(TipoMensagem.CLIENTE + nomeUsuario + ": " + mensagemDoCliente );
-				boolean continuarNoChat = Servidor.verificarComando(this, mensagemDoCliente);//
+    			Servidor.verificarComando(this, mensagemDoCliente);
 				
-				if(continuarNoChat==false) {//se o cliente quiser sair do chat ele sai do while e vai pro finally
+				if(conectado==false) {//se o cliente quiser sair do chat ele sai do while e vai pro finally
 					break;
 				}
 				//Servidor.broadcast(nomeUsuario + ": " + mensagemDoCliente);
@@ -103,7 +111,7 @@ public class ServidorThread extends Thread{
     		if(nomeUsuario !=null) {
     			Servidor.remover(this);//remove o cliente
     			Servidor.broadcast(TipoMensagem.INFO + nomeUsuario + " saiu do chat!");//avisa a todos os clientes que aquele cliente saiu
-    			System.out.println(TipoMensagem.SERVIDOR + nomeUsuario + " foi desconectado do servidor");
+    			System.out.println(TipoMensagem.SERVIDOR + nomeUsuario + " foi desconectado do servidor"); //mostrar no servidor que o cliente foi desconectado
     		}
     		//fechar o socket de forma segura
     		try {
