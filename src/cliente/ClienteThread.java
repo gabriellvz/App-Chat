@@ -6,7 +6,6 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.Socket;
-import java.util.Scanner;
 
 //thread para ler a mensagem que o servidor enviou
 public class ClienteThread extends Thread{
