@@ -5,13 +5,12 @@ public enum TipoMensagem {
 
     LOGIN,
     CLIENTE,
-    PRIVADO, // utilizar quando for implementar o chat privado
+    PRIVADO,
     GERAL,
     LISTA,
     SERVIDOR,
     ERRO,
     INFO;
-
 
     @Override
     public String toString(){

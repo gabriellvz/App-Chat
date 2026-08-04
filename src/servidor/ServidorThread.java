@@ -1,10 +1,4 @@
-//package clienteServidor;
-
 package servidor;
-
-//import cliente.ClienteThread;
-
-//import protocolo.TipoMensagem;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -48,7 +42,7 @@ public class ServidorThread extends Thread{
 	public void validarNome (BufferedReader reader) throws IOException {
 		// loop responsavel por verificar um nome ate que ele seja valido
 		while (true){
-			this.nomeUsuario = reader.readLine();
+			this.nomeUsuario = reader.readLine(); // recebe o nome pelo reader
 
 			// se o nome de usuario for nulo, o socket sera fechado
 			if (this.nomeUsuario == null){
@@ -90,7 +84,6 @@ public class ServidorThread extends Thread{
 
     		String mensagemDoCliente;
 
-
     		// imprime a mensagem do cliente enquanto ele estiver conectado e tiver texto para ler
     		while(conectado && (mensagemDoCliente = reader.readLine() ) !=null) {
 
@@ -100,9 +93,6 @@ public class ServidorThread extends Thread{
 				if(!conectado) {//se o cliente quiser sair do chat ele sai do while e vai pro finally
 					break;
 				}
-				//Servidor.broadcast(nomeUsuario + ": " + mensagemDoCliente);
-    			
-    			//saida.println("servidor: " + mensagemDoCliente); essa linha deixa de ser necessaria pois o broadcast ja envia  a mensagem
     		}
     		socket.close();
     		

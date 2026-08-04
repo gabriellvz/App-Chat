@@ -10,17 +10,12 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
-
-import cliente.ClienteThread;
 import protocolo.TipoMensagem;
-
 
 public class Servidor {
 
-
 	// lista estatica para armazenar clientes conectados ao servidor
 	static ArrayList<ServidorThread> clientesConectados = new ArrayList<>();
-
 
 	// metodo responsavel por validar o comando digitado pelo usuario
 	public static void verificarComando (ServidorThread clienteConectado, String mensagem){
@@ -31,8 +26,8 @@ public class Servidor {
 		// "/" caracter que marca um comando
 		if (mensagem.startsWith("/")){
 			
-			if(partes[0].startsWith("/crs@")) {//verifica se eh uma mensagem privada
-				String destinatario = partes[0].substring(5);//corta os cinco primeiros caracteres pra pegar apenas o nome do destinatario
+			if(partes[0].startsWith("/crs@")) { //verifica se eh uma mensagem privada
+				String destinatario = partes[0].substring(5); //corta os cinco primeiros caracteres pra pegar apenas o nome do destinatario
 				
 				//verfificar se o cliente nao digitou nada(tamanho de partes<2) ou se ele digitou apenas espacos em branco
 				if(partes.length < 2 || partes[1].trim().isEmpty()) {
@@ -42,10 +37,10 @@ public class Servidor {
 					//tenta enviar a mensagem
 					boolean mensagemChegou = enviarMensagemPrivada(nomeUsuario,destinatario,partes[1]);
 					
-					if(mensagemChegou) {//se a mensagem chegou ele confirma pro rementente
+					if(mensagemChegou) { //se a mensagem chegou ele confirma pro rementente
 						clienteConectado.enviarMensagem(TipoMensagem.PRIVADO+"voce para <" + destinatario + "> " + partes[1]);
 					}
-					else {//se a mensagem nao chegou ele confirma pro rementente
+					else { //se a mensagem nao chegou ele confirma pro rementente
 						clienteConectado.enviarMensagem(TipoMensagem.ERRO + destinatario +" nao encontrado");
 					}
 				}
@@ -76,12 +71,11 @@ public class Servidor {
 			  }		
 		   }
 	    }
-	   // se a mensagem nao for um comando
+	    // se a mensagem nao for um comando
 		else {
 			clienteConectado.enviarMensagem(TipoMensagem.ERRO + "Digite um comando valido.");
 	    }
 	}
-
 
 	// metodo responsavel por listar nomes dos usuarios conectados
 	public static String listarUsuariosConectados(){
@@ -91,11 +85,9 @@ public class Servidor {
 		for (ServidorThread c : clientesConectados){
 			i++;
 			sb.append(i + ". " + c.getNomeUsuario()+ "\n");
-			//System.out.println(i + ". " + c.getNomeUsuario());
 		}
 		return sb.toString(); // retorna um objeto sb que converte a saida para string
 	}
-
 
 	// metodo responsavel por retornar um boolean para saber se um nome ja esta presente na lista
 	public static boolean nomeJaExiste (String nome){
@@ -115,7 +107,7 @@ public class Servidor {
 		clientesConectados.remove(s);
 	}
 
-	// classe responsavel por enviar a mensagem para todos clientes conectados
+	// metodo responsavel por enviar a mensagem para todos clientes conectados
 	// o metodo percorre a lista de clientes conectados e envia uma mensagem a todas as trheads ativas
 	public static void broadcast (String mensagem){
 		for (ServidorThread c : clientesConectados){
@@ -131,11 +123,11 @@ public class Servidor {
 			}
 		}return false;//se nao encontrar ninguem retorna falso
 	}
+
 	public static boolean sairDoChat() {
 		return false;
 		
 	}
-
 
 	public static void main(String[] args) {
         try {

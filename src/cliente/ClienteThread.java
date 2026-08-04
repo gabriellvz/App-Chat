@@ -1,18 +1,12 @@
-//package clienteServidor;
-
 package cliente;
 
 import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.PrintStream;
 import java.net.Socket;
 
 //thread para ler a mensagem que o servidor enviou
 public class ClienteThread extends Thread{
 	private Socket socket;
-	private InputStreamReader input;
-	private BufferedReader reader;
-	//private String nomeUsuario;
+	private final BufferedReader reader;
 
 	public ClienteThread(Socket socket, BufferedReader reader) {
 		this.socket = socket;
@@ -22,23 +16,9 @@ public class ClienteThread extends Thread{
 	@Override
 	public void run() {
 		try {
-
-			//obter o fluxo de entrada pelo socket e transformar os bytes em String por meio do InputStreamReader
-
-			//InputStreamReader inputReader = new InputStreamReader(socket.getInputStream());
-			
-			//usar um leitor de buffer pra facilitar a leitura
-
-			//BufferedReader reader = new BufferedReader(inputReader);
-
-			//enviar mensagem para o servidor
-			PrintStream saida = new PrintStream(socket.getOutputStream());
-
 			String mensagemServidor;
-
 			// ler e imprime a mensagem equanto houver texto
 			while((mensagemServidor = reader.readLine()) != null) {
-				//System.out.println();
 				System.out.println(mensagemServidor);//printar a mensagem que o servidor enviou
 				//System.out.print("> ");
 			}
@@ -50,8 +30,6 @@ public class ClienteThread extends Thread{
 			}else {
 				ex.printStackTrace();
 			}
-			
 		}
 	}
-
 }

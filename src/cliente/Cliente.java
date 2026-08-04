@@ -1,15 +1,9 @@
-//package clienteServidor;
-
 package cliente;
-
-//import servidor.Servidor;
-//import servidor.ServidorThread;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
-import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Scanner;
@@ -19,7 +13,7 @@ import protocolo.UI;
 public class Cliente {
 
 	private static Socket conectar (Scanner scanner){
-		Socket socket = null;
+		Socket socket;
 		while(true){
 			System.out.print(TipoMensagem.INFO + "Digite o numero IP para se conectar ao servidor: ");
 			String numeroIP = scanner.nextLine().trim(); // trim remove espacos
@@ -61,10 +55,6 @@ public class Cliente {
 			//criar um leitor de buffer para facilitar a leitura
 			BufferedReader reader = new BufferedReader(inputReader);
 
-
-
-			//imprimirLinha();
-			//System.out.println(menu());
 			while (true){
 				System.out.print((TipoMensagem.LOGIN) + "Digite seu nome/apelido: ");
 				String nomeUsuario = scanner.nextLine(); // le do teclado
@@ -77,6 +67,7 @@ public class Cliente {
 				// caso o nome for aceito encerra o loop imediatamente
 				if (resposta.equals("NOME_ACEITO")){
 					System.out.println(TipoMensagem.LOGIN + "O nome foi aceito.");
+					System.out.println("\n" + TipoMensagem.INFO + "\u001B[33mCONECTADO COMO " + "[" + nomeUsuario.toUpperCase() + "]" + "\u001B[0m\n");
 					break;
 				}
 				else{
