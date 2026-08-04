@@ -4,15 +4,17 @@ package servidor;
 
 //import cliente.ClienteThread;
 
-import protocolo.TipoMensagem;
+//import protocolo.TipoMensagem;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.Scanner;
+
+import protocolo.TipoMensagem;
+
+
 
 //thread responsavel por conversar com apenas 1 cliente deixando a thread principal (main) livre
 public class ServidorThread extends Thread{
