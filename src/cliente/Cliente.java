@@ -9,6 +9,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Scanner;
@@ -17,24 +18,40 @@ import protocolo.UI;
 
 public class Cliente {
 
+	private static Socket conectar (Scanner scanner){
+		Socket socket = null;
+		while(true){
+			System.out.print(TipoMensagem.INFO + "Digite o numero IP para se conectar ao servidor: ");
+			String numeroIP = scanner.nextLine().trim(); // trim remove espacos
+
+			// essas excessoes serao tratadas no momento em que o cliente tentar se conectar ao servidor
+			try{
+				socket = new Socket(numeroIP, 4000);
+				System.out.println(TipoMensagem.INFO + "Conexao estabelecida");
+
+				return socket;
+			}catch (UnknownHostException hostException){ // excessao para caso um host nao for encotrado (ip invalido)
+				System.out.println(TipoMensagem.ERRO + "Host nao encontrado.");
+			}catch (IOException ioException){
+				System.out.println(TipoMensagem.ERRO + "Servidor indisponivel..."); // algum outro problema na conexao
+			}
+
+		}
+	}
 
 	public static void main(String[] args) {
+
+		Socket socket;
+
 		try {
 
 			UI.imprimirMenu();
+			//System.out.println(endereco);
 			Scanner scanner = new Scanner(System.in); //receber dados do teclado
-//			while(true){
-//
-//				System.out.println("Digite o numero IP para se conectar ao servidor: ");
-//				String numeroIP = scanner.nextLine();
-//
-//
-//
-//			}
 
-			Socket socket = new Socket("localhost",4000); //criar a conexao entre as maquinas
+			socket = conectar(scanner);
 
-			// converter a String para bytes e manda eles pro outputStream
+            // converter a String para bytes e manda eles pro outputStream
 			PrintStream saida = new PrintStream(socket.getOutputStream());
 
 			// ler dados do servidor

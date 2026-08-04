@@ -15,9 +15,6 @@ import cliente.ClienteThread;
 import protocolo.TipoMensagem;
 
 
-
-
-
 public class Servidor {
 
 
@@ -39,15 +36,17 @@ public class Servidor {
 				
 				//verfificar se o cliente nao digitou nada(tamanho de partes<2) ou se ele digitou apenas espacos em branco
 				if(partes.length < 2 || partes[1].trim().isEmpty()) {
-					clienteConectado.enviarMensagem(TipoMensagem.ERRO+"erro! digie uma mensagem apos o nome");
-				}else {
+					clienteConectado.enviarMensagem(TipoMensagem.ERRO+" Digite uma mensagem apos o nome.");
+				}
+				else {
 					//tenta enviar a mensagem
 					boolean mensagemChegou = enviarMensagemPrivada(nomeUsuario,destinatario,partes[1]);
 					
-					if(mensagemChegou==true) {//se a mensagem chegou ele confirma pro rementente
+					if(mensagemChegou) {//se a mensagem chegou ele confirma pro rementente
 						clienteConectado.enviarMensagem(TipoMensagem.PRIVADO+"voce para <" + destinatario + "> " + partes[1]);
-					}else {//se a mensagem nao chegou ele confirma pro rementente
-						clienteConectado.enviarMensagem(TipoMensagem.ERRO+destinatario+" nao encontrado");
+					}
+					else {//se a mensagem nao chegou ele confirma pro rementente
+						clienteConectado.enviarMensagem(TipoMensagem.ERRO + destinatario +" nao encontrado");
 					}
 				}
 			}else {// se nao for uma mensagem privada continua procurando nos outro comandos
@@ -62,7 +61,7 @@ public class Servidor {
 						clienteConectado.enviarMensagem(TipoMensagem.ERRO + "Digite uma mensagem apos /msg.");
 					}
 					else{
-						broadcast(TipoMensagem.GERAL + "<" + nomeUsuario + "> " + partes[1]); // envia mensagem para broadcast
+						broadcast(TipoMensagem.GERAL + "\u001B[33m<" + nomeUsuario + ">\u001B[0m " + partes[1]); // envia mensagem para broadcast
 					}
 					break;
 
@@ -110,7 +109,6 @@ public class Servidor {
 			if (nome.equalsIgnoreCase(c.getNomeUsuario())){ // equalsIgnoreCase compara desconsiderando entre maiusculas e minusculas
 				return true;
 			}
-
 		}
 		return false;
 	}
@@ -154,7 +152,7 @@ public class Servidor {
         		servidorThread.start();
 
         		
-        		System.out.println(TipoMensagem.SERVIDOR + "um cliente se conectou.");
+        		System.out.println("\u001B[32m" + TipoMensagem.SERVIDOR + "um cliente se conectou.\u001B[0m");
 
         		//serverSocket.close(); criar um if para fechar a conexao
     		}		

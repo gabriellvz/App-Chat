@@ -34,7 +34,7 @@ public class UI {
         imprimirLinha();
         System.out.printf("    %-12s - %s%n", "/listar","Lista os usuarios conectados ao servidor.");
         System.out.printf("    %-12s - %s%n", "/msg", "Envia uma mensagem.");
-        System.out.printf("    %-12s - %s%n", "/crs", "Cria uma sala de chat privado com outro usuario.");
+        System.out.printf("    %-12s - %s%n", "/crs@", "Cria uma sala de chat privado com outro usuario.");
         System.out.printf("    %-12s - %s%n", "/sair", "O usario sera desconectado do chat.");
         imprimirEspacos(4);
         imprimirLinha();
@@ -46,7 +46,7 @@ public class UI {
         imprimirEspacos(4);
         imprimirLinha();
         System.out.println("    1. Para o comando /msg utilize o formato: /msg_mensagem");
-        System.out.println("    2. Para o comando /crs utilize o formato: /crs@nomeUsuario");
+        System.out.println("    2. Para o comando /crs@ utilize o formato: /crs@nomeUsuario");
         imprimirEspacos(4);
         imprimirLinha();
     }
