@@ -23,7 +23,7 @@ public class Servidor {
 
 
 	// metodo responsavel por validar o comando digitado pelo usuario
-	public static boolean verificarComando (ServidorThread clienteConectado, String mensagem){
+	public static void verificarComando (ServidorThread clienteConectado, String mensagem){
 
 		String [] partes = mensagem.split(" ", 2); // divide a mensagem por espacos " " em duas partes
 		String nomeUsuario = clienteConectado.getNomeUsuario();
@@ -66,26 +66,20 @@ public class Servidor {
 					break;
 
 				case "/sair":
-					return false; //para parar de receber mensagens
-
+					clienteConectado.desconectar(); //usa o metodo de ServidorThread para mudar o estado da variavel conectado
+					break;
+					
 				// a mensagem tiver o marcador de comando '/' mas nao for um comando valido
 				default:
 					clienteConectado.enviarMensagem(TipoMensagem.ERRO + "Digite um comando valido.");
 					break;
-			}
-
-				
-			}
-
-	
-		}
-		// se a mensagem nao for um comando
+			  }		
+		   }
+	    }
+	   // se a mensagem nao for um comando
 		else {
 			clienteConectado.enviarMensagem(TipoMensagem.ERRO + "Digite um comando valido.");
-		}
-		return true;//retorna verdadeiro pra continuar recebendo mensagens
-
-
+	    }
 	}
 
 
@@ -136,6 +130,10 @@ public class Servidor {
 				return true;
 			}
 		}return false;//se nao encontrar ninguem retorna falso
+	}
+	public static boolean sairDoChat() {
+		return false;
+		
 	}
 
 

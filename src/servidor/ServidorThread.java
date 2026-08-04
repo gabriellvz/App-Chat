@@ -14,14 +14,11 @@ import java.net.Socket;
 
 import protocolo.TipoMensagem;
 
-
-
 //thread responsavel por conversar com apenas 1 cliente deixando a thread principal (main) livre
 public class ServidorThread extends Thread{
 	private Socket socket;
 	private String nomeUsuario;
-
-	private String IP;
+	private boolean conectado = true;
 	private PrintStream saida;
 
 	private BufferedReader reader;
@@ -35,12 +32,12 @@ public class ServidorThread extends Thread{
 		return this.nomeUsuario;
 	}
 
-	public String getIP (){
-		return this.IP;
+	public boolean getConectado(boolean conectado) {
+		return this.conectado;
 	}
-
-	public void setNomeUsuario (String nomeUsuario){
-		this.nomeUsuario = nomeUsuario;
+	//metodo usado quando o cliente pedir para sair do chat
+	public void desconectar() {
+		this.conectado=false;
 	}
 
 	// metodo responsavel por enviar uma mensagem pelo sokcet
@@ -92,12 +89,15 @@ public class ServidorThread extends Thread{
 			validarNome(reader);
 
     		String mensagemDoCliente;
-    		// ler e imprime a mensagem equanto houver texto
-    		while((mensagemDoCliente = reader.readLine()) !=null ) {
-				System.out.println(TipoMensagem.CLIENTE + nomeUsuario + ": " + mensagemDoCliente );
-				boolean continuarNoChat = Servidor.verificarComando(this, mensagemDoCliente);//
+
+
+    		// imprime a mensagem do cliente enquanto ele estiver conectado e tiver texto para ler
+    		while(conectado && (mensagemDoCliente = reader.readLine() ) !=null) {
+
+    			System.out.println(TipoMensagem.CLIENTE + nomeUsuario + ": " + mensagemDoCliente );
+    			Servidor.verificarComando(this, mensagemDoCliente);
 				
-				if(!continuarNoChat) {//se o cliente quiser sair do chat ele sai do while e vai pro finally
+				if(!conectado) {//se o cliente quiser sair do chat ele sai do while e vai pro finally
 					break;
 				}
 				//Servidor.broadcast(nomeUsuario + ": " + mensagemDoCliente);
@@ -114,7 +114,7 @@ public class ServidorThread extends Thread{
     		if(nomeUsuario !=null) {
     			Servidor.remover(this);//remove o cliente
     			Servidor.broadcast(TipoMensagem.INFO + nomeUsuario + " saiu do chat!");//avisa a todos os clientes que aquele cliente saiu
-    			System.out.println(TipoMensagem.SERVIDOR + nomeUsuario + " foi desconectado do servidor");
+    			System.out.println(TipoMensagem.SERVIDOR + nomeUsuario + " foi desconectado do servidor"); //mostrar no servidor que o cliente foi desconectado
     		}
     		//fechar o socket de forma segura
     		try {
