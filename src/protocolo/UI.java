@@ -9,6 +9,7 @@ public class UI {
     private static final String COR_VERDE = "\u001B[32m";
     private static final String COR_AMARELO = "\u001B[33m";
     private static final String COR_AZUL = "\u001B[34m";
+    private static final String COR_CIANO = "\u001B[36m";
 
     //imprimeLinha
     private static void imprimirLinha(){
@@ -85,16 +86,23 @@ public class UI {
         System.out.println();
     }
 
-    public static String estilizarMensagem (TipoMensagem t ,String mensagem){
-        switch (t){
-            case ERRO:
+    public static String estilizarMensagem (char cor ,String mensagem){
+        switch (cor){
+            case 'R':
                 return UI.COR_VERMELHO + mensagem + UI.RESETAR_COR;
 
-            case CLIENTE:
-                return UI.COR_AMARELO + "<"+ mensagem +"> " + UI.RESETAR_COR;
+            case 'Y':
+                return UI.COR_AMARELO +  mensagem  + UI.RESETAR_COR;
 
-            case SERVIDOR:
+            case 'G':
                 return UI.COR_VERDE + mensagem + UI.RESETAR_COR;
+
+            case 'B':
+                return UI.COR_AZUL + mensagem + UI.RESETAR_COR;
+
+            case 'C':
+                return UI.COR_CIANO + mensagem + UI.RESETAR_COR;
+
         }
         return mensagem;
     }

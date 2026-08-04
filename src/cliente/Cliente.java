@@ -15,19 +15,19 @@ public class Cliente {
 	private static Socket conectar (Scanner scanner){
 		Socket socket;
 		while(true){
-			System.out.print(TipoMensagem.INFO + "Digite o numero IP para se conectar ao servidor: ");
+			System.out.print(TipoMensagem.INFO + UI.estilizarMensagem('G',"Digite o numero IP para se conectar ao servidor: "));
 			String numeroIP = scanner.nextLine().trim(); // trim remove espacos
 
 			// essas excessoes serao tratadas no momento em que o cliente tentar se conectar ao servidor
 			try{
 				socket = new Socket(numeroIP, 4000);
-				System.out.println(TipoMensagem.INFO + "Conexao estabelecida");
+				System.out.println(TipoMensagem.INFO + UI.estilizarMensagem('G', "Conexao estabelecida"));
 
 				return socket;
 			}catch (UnknownHostException hostException){ // excessao para caso um host nao for encotrado (ip invalido)
-				System.out.println(TipoMensagem.ERRO + "Host nao encontrado.");
+				System.out.println(TipoMensagem.ERRO + UI.estilizarMensagem('R',"Host nao encontrado."));
 			}catch (IOException ioException){
-				System.out.println(TipoMensagem.ERRO + "Servidor indisponivel..."); // algum outro problema na conexao
+				System.out.println(TipoMensagem.ERRO + UI.estilizarMensagem('R', "Servidor indisponivel...")); // algum outro problema na conexao
 			}
 
 		}
@@ -56,7 +56,7 @@ public class Cliente {
 			BufferedReader reader = new BufferedReader(inputReader);
 
 			while (true){
-				System.out.print((TipoMensagem.LOGIN) + "Digite seu nome/apelido: ");
+				System.out.print((TipoMensagem.LOGIN) + UI.estilizarMensagem('G',"Digite seu nome/apelido: "));
 				String nomeUsuario = scanner.nextLine(); // le do teclado
 
 				// envia o nome de usuario para o servidor por meio do socket.getOutputStream
@@ -66,12 +66,12 @@ public class Cliente {
 
 				// caso o nome for aceito encerra o loop imediatamente
 				if (resposta.equals("NOME_ACEITO")){
-					System.out.println(TipoMensagem.LOGIN + "O nome foi aceito.");
-					System.out.println("\n" + TipoMensagem.INFO + "\u001B[33mCONECTADO COMO " + "[" + nomeUsuario.toUpperCase() + "]" + "\u001B[0m\n");
+					System.out.println(TipoMensagem.LOGIN + UI.estilizarMensagem('G',"O nome foi aceito."));
+					System.out.println("\n" + TipoMensagem.INFO + UI.estilizarMensagem('Y', "[CONECTADO COMO "  + nomeUsuario.toUpperCase() + "]\n"));
 					break;
 				}
 				else{
-					System.out.println(TipoMensagem.LOGIN + "O nome ja esta em uso. Digite novamente um nome valido.");
+					System.out.println(TipoMensagem.ERRO + UI.estilizarMensagem('R',"O nome ja esta em uso. Digite novamente um nome valido."));
 				}
 
 			}
@@ -87,7 +87,7 @@ public class Cliente {
 
 				saida.println(teclado);
 				if(teclado.equalsIgnoreCase("/sair")) {
-					System.out.println("desconectando do chat...");
+					System.out.println(UI.estilizarMensagem('G',"desconectando do chat..."));
 					break;
 				}			
 			}

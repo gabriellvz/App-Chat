@@ -7,6 +7,7 @@ import java.io.PrintStream;
 import java.net.Socket;
 
 import protocolo.TipoMensagem;
+import protocolo.UI;
 
 //thread responsavel por conversar com apenas 1 cliente deixando a thread principal (main) livre
 public class ServidorThread extends Thread{
@@ -56,9 +57,9 @@ public class ServidorThread extends Thread{
 			else {
 				//adiciona o objeto atual a lista de servidorThread
 				Servidor.adicionar(this);
-				System.out.println(Servidor.listarUsuariosConectados()); // retorna usuarios no servidor sempre que um novo se conectar
+				System.out.println(UI.estilizarMensagem('C', Servidor.listarUsuariosConectados())); // retorna usuarios no servidor sempre que um novo se conectar
 				saida.println("NOME_ACEITO"); // msg para o socket
-				Servidor.broadcast(TipoMensagem.INFO + this.nomeUsuario + " entrou no chat.");
+				Servidor.broadcast(TipoMensagem.INFO + UI.estilizarMensagem('G', this.nomeUsuario + " entrou no chat."));
 				break;
 			}
 		}
@@ -87,7 +88,7 @@ public class ServidorThread extends Thread{
     		// imprime a mensagem do cliente enquanto ele estiver conectado e tiver texto para ler
     		while(this.conectado && (mensagemDoCliente = reader.readLine() ) !=null) {
 
-    			System.out.println(TipoMensagem.CLIENTE + this.nomeUsuario + ": " + mensagemDoCliente );
+    			System.out.println(UI.estilizarMensagem('Y',TipoMensagem.CLIENTE + this.nomeUsuario + ": " + mensagemDoCliente ));
     			Servidor.verificarComando(this, mensagemDoCliente);
 				
 				if(!this.conectado) {//se o cliente quiser sair do chat ele sai do while e vai pro finally
@@ -97,14 +98,14 @@ public class ServidorThread extends Thread{
     		socket.close();
     		
     	} catch(IOException ex) {
-    		System.out.println(TipoMensagem.SERVIDOR + "Conexao perdida com o cliente: " + this.nomeUsuario);
+    		System.out.println(UI.estilizarMensagem('G',TipoMensagem.SERVIDOR + "Conexao perdida com o cliente: " + this.nomeUsuario));
 
     	} finally {
 
     		if(this.nomeUsuario !=null) {
     			Servidor.remover(this);//remove o cliente
-    			Servidor.broadcast(TipoMensagem.INFO + this.nomeUsuario + " saiu do chat!");//avisa a todos os clientes que aquele cliente saiu
-    			System.out.println(TipoMensagem.SERVIDOR + this.nomeUsuario + " foi desconectado do servidor"); //mostrar no servidor que o cliente foi desconectado
+    			Servidor.broadcast(UI.estilizarMensagem('G',TipoMensagem.INFO + this.nomeUsuario + " saiu do chat!"));//avisa a todos os clientes que aquele cliente saiu
+    			System.out.println(UI.estilizarMensagem('G',TipoMensagem.SERVIDOR + this.nomeUsuario + " foi desconectado do servidor")); //mostrar no servidor que o cliente foi desconectado
     		}
     		//fechar o socket de forma segura
     		try {
