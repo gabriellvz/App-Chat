@@ -4,7 +4,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
+import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.Scanner;
 import protocolo.TipoMensagem;
@@ -20,11 +22,17 @@ public class Cliente {
 			String numeroIP = scanner.nextLine().trim(); // trim remove espacos
 			// essas excessoes serao tratadas no momento em que o cliente tentar se conectar ao servidor
 			try{
-				socket = new Socket(numeroIP, 4000);
+				// Cria o socket vazio
+				socket = new Socket();
+				// Tenta conectar na porta 4000 com tempo limite (timeout) de 5 segundos
+				socket.connect(new InetSocketAddress(numeroIP, 4000), 5000); // 5000ms = 5 segundos de limite
+				
 				System.out.println(TipoMensagem.INFO + UI.estilizarMensagem('G', "Conexao estabelecida"));
 				return socket;		
 			} catch (UnknownHostException hostException){ // excessao para caso um host nao for encotrado (ip invalido)
 				System.out.println(TipoMensagem.ERRO + UI.estilizarMensagem('R',"Host nao encontrado."));
+			}catch (SocketTimeoutException timeoutException){ // Captura o erro caso o servidor demore mais de 5 segundos para responder
+				System.out.println(TipoMensagem.ERRO + UI.estilizarMensagem('R', "Tempo esgotado (Timeout). O servidor nao respondeu a tempo ou o IP esta incorreto."));
 			} catch (IOException ioException){
 				System.out.println(TipoMensagem.ERRO + UI.estilizarMensagem('R', "Servidor indisponivel...")); // algum outro problema na conexao
 			}
