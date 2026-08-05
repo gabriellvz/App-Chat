@@ -1,5 +1,8 @@
 package cliente;
 
+import protocolo.TipoMensagem;
+import protocolo.UI;
+
 import java.io.BufferedReader;
 import java.net.Socket;
 
@@ -24,7 +27,8 @@ public class ClienteThread extends Thread{
 		} catch(Exception ex) {
 			//excecao para o caso de o socket ser fechado intencionalmente,nao faz nada,apenas encerra a thread de forma silenciosa
 			if(ex.getMessage() != null && ex.getMessage().contains("Socket closed") || ex.getMessage().contains("Connection reset")) {			
-				//excecao para um erro real
+				System.out.println(TipoMensagem.INFO + UI.estilizarMensagem('Y',"Conexao perdida com o servidor "));
+				System.exit(0);
 			}else {
 				ex.printStackTrace();
 			}

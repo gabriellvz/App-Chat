@@ -57,7 +57,7 @@ public class Cliente {
 				// caso o nome for aceito encerra o loop imediatamente
 				case "NOME_ACEITO":
 					System.out.println(TipoMensagem.LOGIN + UI.estilizarMensagem('G', "O nome foi aceito."));
-					System.out.println("\n" + TipoMensagem.INFO + UI.estilizarMensagem('Y', "[CONECTADO COMO " + nomeUsuario.toUpperCase() + "]\n"));
+					System.out.println("\n" + TipoMensagem.INFO + "CONECTADO COMO " + UI.estilizarMensagem('Y', "[" + nomeUsuario.toUpperCase() + "]\n"));
 					break parar;
 
 				// se o nome estiver em uso
@@ -109,7 +109,6 @@ public class Cliente {
 			// permite continuar lendo varias mensagens
 			while(true) {
 				String teclado = scanner.nextLine();
-
 				saida.println(teclado);
 				if(teclado.equalsIgnoreCase("/sair")) {
 					System.out.println(UI.estilizarMensagem('G',"desconectando do chat..."));

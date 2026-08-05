@@ -29,7 +29,7 @@ public class Servidor {
 				if (partesChatPrivado.length < 2 || partesChatPrivado[1].trim().isEmpty()) {
 					clienteConectado.enviarMensagem(TipoMensagem.ERRO+  UI.estilizarMensagem('R',"mensagem vazia!"));
 				}
-			    else if (partesChatPrivado[1].length()>20){//para impedir de enviar mensagens grandes
+			    else if (partesChatPrivado[1].length() > 60){//para impedir de enviar mensagens grandes
 				clienteConectado.enviarMensagem(TipoMensagem.ERRO+UI.estilizarMensagem('R', "A mensagem nao pode ter mais de 20 caracteres!"));
 				
 			    }
@@ -62,7 +62,7 @@ public class Servidor {
 				case "/msg":
 					if (partes.length < 2 || partes[1].trim().isEmpty()){ // trim remove espacos, is empty verifica se o tamanho eh 0
 						clienteConectado.enviarMensagem(TipoMensagem.ERRO + UI.estilizarMensagem('R',"Digite uma mensagem apos /msg."));
-					}else if(partes[1].length()>20){//para impedir de enviar mensagens grandes
+					}else if(partes[1].length() > 60){//para impedir de enviar mensagens grandes
 						clienteConectado.enviarMensagem(TipoMensagem.ERRO+UI.estilizarMensagem('R', "A mensagem nao pode ter mais de 20 caracteres!"));				
 					}
 					else{
@@ -141,18 +141,20 @@ public class Servidor {
 		return false;//se nao encontrar ninguem retorna falso
 	}
 
+
+
+
 	public static void main(String[] args) {
 
         try {
         	
 			ServerSocket serverSocket = new ServerSocket(4000);//inicia um servidor de rede e abre a porta 4000 para se conectar com um cliente
 			while(true) {
-    			System.out.println(TipoMensagem.SERVIDOR + UI.estilizarMensagem('G',"aguardando conexao..."));
+    			System.out.println(UI.estilizarMensagem('G',TipoMensagem.SERVIDOR + "aguardando conexao..."));
         		Socket socket = serverSocket.accept();//pausa a execucao, espera um cliente se conectar e retorna um socket
         		ServidorThread servidorThread = new ServidorThread(socket);//cria uma thread responsavel por um cliente
         		servidorThread.start();	
         		System.out.println( UI.estilizarMensagem('G', TipoMensagem.SERVIDOR + "um cliente se conectou."));
-    		
 			}		
 			
         }catch(java.net.BindException portaOcupada) {
