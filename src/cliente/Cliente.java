@@ -18,16 +18,14 @@ public class Cliente {
 		while(true){
 			System.out.print(TipoMensagem.INFO + UI.estilizarMensagem('G',"Digite o numero IP para se conectar ao servidor: "));
 			String numeroIP = scanner.nextLine().trim(); // trim remove espacos
-
 			// essas excessoes serao tratadas no momento em que o cliente tentar se conectar ao servidor
 			try{
 				socket = new Socket(numeroIP, 4000);
 				System.out.println(TipoMensagem.INFO + UI.estilizarMensagem('G', "Conexao estabelecida"));
-
-				return socket;
-			}catch (UnknownHostException hostException){ // excessao para caso um host nao for encotrado (ip invalido)
+				return socket;		
+			} catch (UnknownHostException hostException){ // excessao para caso um host nao for encotrado (ip invalido)
 				System.out.println(TipoMensagem.ERRO + UI.estilizarMensagem('R',"Host nao encontrado."));
-			}catch (IOException ioException){
+			} catch (IOException ioException){
 				System.out.println(TipoMensagem.ERRO + UI.estilizarMensagem('R', "Servidor indisponivel...")); // algum outro problema na conexao
 			}
 
@@ -86,7 +84,7 @@ public class Cliente {
 		try {
 
 			UI.imprimirMenu();
-			//System.out.println(endereco);
+			
 			Scanner scanner = new Scanner(System.in); //receber dados do teclado
 
 			socket = conectar(scanner);
@@ -110,7 +108,6 @@ public class Cliente {
 
 			// permite continuar lendo varias mensagens
 			while(true) {
-				//System.out.print("> ");
 				String teclado = scanner.nextLine();
 
 				saida.println(teclado);
@@ -130,7 +127,6 @@ public class Cliente {
 			
 		}catch(IOException entradaSaida) {
 			entradaSaida.printStackTrace();
-
 		}
 	}
 }
