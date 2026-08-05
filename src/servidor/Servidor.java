@@ -93,8 +93,16 @@ public class Servidor {
 	    }
 	}
 
+	/*
+	 * Syncronized foi adicionado aos metodos que fazer acesso a lista de clientes conectados
+	 * para evitar problemas de conconrrencias entre as threads.
+	 *
+	 * As threads fazem acesso a um recurso compartilhado em comum, a lista clientesConectados
+	 * Syncronized evita que duas ou mais threads acessem a lista ao mesmo tempo
+	 * */
+
 	// metodo responsavel por listar nomes dos usuarios conectados
-	public static String listarUsuariosConectados(){
+	public static synchronized String listarUsuariosConectados(){
 		StringBuilder sb = new StringBuilder(); // stringBuilder serve para formatar saidas convertidas para string
 		int i = 0; // indice
 		sb.append("\n" + TipoMensagem.LISTA + UI.estilizarMensagem('C',"Usuarios conectados: ") + "\n");
@@ -106,7 +114,7 @@ public class Servidor {
 	}
 
 	// metodo responsavel por retornar um boolean para saber se um nome ja esta presente na lista
-	public static boolean nomeJaExiste (String nome){
+	public static synchronized boolean nomeJaExiste (String nome){
 		for (ServidorThread c : clientesConectados){
 			if (nome.equalsIgnoreCase(c.getNomeUsuario())){ // equalsIgnoreCase compara desconsiderando entre maiusculas e minusculas
 				return true;
@@ -115,34 +123,30 @@ public class Servidor {
 		return false;
 	}
 
-	public static void adicionar(ServidorThread s){
+	public static synchronized void adicionar(ServidorThread s){
 		clientesConectados.add(s);
 	}
 
-	public static void remover(ServidorThread s){
+	public static synchronized void remover(ServidorThread s){
 		clientesConectados.remove(s);
 	}
 
 	// metodo responsavel por enviar a mensagem para todos clientes conectados
 	// o metodo percorre a lista de clientes conectados e envia uma mensagem a todas as trheads ativas
-	public static void broadcast (String mensagem){
+	public static synchronized void broadcast (String mensagem){
 		for (ServidorThread c : clientesConectados){
 			c.enviarMensagem(mensagem);
 		}
 	}
 	
-	public static boolean enviarMensagemPrivada(String remetente,String destinatario,String mensagem) {
+	public static synchronized boolean enviarMensagemPrivada(String remetente,String destinatario,String mensagem) {
 		for(ServidorThread cliente : clientesConectados) {//percorre a lista de clientes conectados e envia mensagem somente pro que tiver o nome correspondente
 			if(cliente.getNomeUsuario().equalsIgnoreCase(destinatario)) {
 				cliente.enviarMensagem(TipoMensagem.PRIVADO + UI.estilizarMensagem('B', "<"+ remetente + "> ") +mensagem);
 				return true;
 			}
-		}return false;//se nao encontrar ninguem retorna falso
-	}
-
-	public static boolean sairDoChat() {
-		return false;
-		
+		}
+		return false;//se nao encontrar ninguem retorna falso
 	}
 
 	public static void main(String[] args) {
