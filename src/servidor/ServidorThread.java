@@ -20,7 +20,6 @@ public class ServidorThread extends Thread{
 
 	public ServidorThread(Socket socket){
 		this.socket = socket;
-
 	}
 
 	public String getNomeUsuario (){
@@ -87,7 +86,7 @@ public class ServidorThread extends Thread{
 
 	
     @Override
-    public void run() {
+    public void run () {
     	try {
     		//receber mensagem do cliente
     		
@@ -105,7 +104,7 @@ public class ServidorThread extends Thread{
     		String mensagemDoCliente;
 
     		// imprime a mensagem do cliente enquanto ele estiver conectado e tiver texto para ler
-    		while(this.conectado && (mensagemDoCliente = reader.readLine() ) !=null) {
+    		while (this.conectado && (mensagemDoCliente = reader.readLine() ) !=null) {
 
     			System.out.println(UI.estilizarMensagem('Y',TipoMensagem.CLIENTE + this.nomeUsuario + ": " + mensagemDoCliente ));
     			Servidor.verificarComando(this, mensagemDoCliente);
@@ -116,12 +115,12 @@ public class ServidorThread extends Thread{
     		}
     		socket.close();
     		
-    	} catch(IOException ex) {
+    	} catch (IOException ex) {
     		System.out.println(UI.estilizarMensagem('G',TipoMensagem.SERVIDOR + "Conexao perdida com o cliente: " + this.nomeUsuario));
 
     	} finally {
 
-    		if(this.nomeUsuario !=null) {
+    		if (this.nomeUsuario !=null) {
     			Servidor.remover(this);//remove o cliente
     			Servidor.broadcast(TipoMensagem.INFO + UI.estilizarMensagem('G',  this.nomeUsuario + " saiu do chat!"));//avisa a todos os clientes que aquele cliente saiu
     			System.out.println(UI.estilizarMensagem('G',TipoMensagem.SERVIDOR + this.nomeUsuario + " foi desconectado do servidor")); //mostrar no servidor que o cliente foi desconectado
@@ -132,10 +131,9 @@ public class ServidorThread extends Thread{
     				socket.close();
     			}
     			
-    		}catch(IOException ex) {
+    		} catch(IOException ex) {
     			ex.printStackTrace();
     		}
-    	}
-    	
+    	}    	
     }
 }
