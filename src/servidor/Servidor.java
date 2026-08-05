@@ -60,7 +60,7 @@ public class Servidor {
 				
 			}else {// se nao for uma mensagem privada continua procurando nos outro comandos
 				
-				switch (partes[0]){
+				switch (partes[0]){ // verifica comando
 
 				case "/listar":
 					clienteConectado.enviarMensagem(listarUsuariosConectados()); // tem que ser so para o cliente
