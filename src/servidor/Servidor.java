@@ -29,8 +29,8 @@ public class Servidor {
 				if (partesChatPrivado.length < 2 || partesChatPrivado[1].trim().isEmpty()) {
 					clienteConectado.enviarMensagem(TipoMensagem.ERRO+  UI.estilizarMensagem('R',"mensagem vazia!"));
 				}
-			    else if (partesChatPrivado[1].length() > 60){//para impedir de enviar mensagens grandes
-				clienteConectado.enviarMensagem(TipoMensagem.ERRO+UI.estilizarMensagem('R', "A mensagem nao pode ter mais de 20 caracteres!"));
+			    else if (partesChatPrivado[1].length() > 100){//para impedir de enviar mensagens grandes
+				clienteConectado.enviarMensagem(TipoMensagem.ERRO+UI.estilizarMensagem('R', "A mensagem nao pode ter mais de 100 caracteres!"));
 				
 			    }
 				else {				
@@ -62,8 +62,8 @@ public class Servidor {
 				case "/msg":
 					if (partes.length < 2 || partes[1].trim().isEmpty()){ // trim remove espacos, is empty verifica se o tamanho eh 0
 						clienteConectado.enviarMensagem(TipoMensagem.ERRO + UI.estilizarMensagem('R',"Digite uma mensagem apos /msg."));
-					}else if(partes[1].length() > 60){//para impedir de enviar mensagens grandes
-						clienteConectado.enviarMensagem(TipoMensagem.ERRO+UI.estilizarMensagem('R', "A mensagem nao pode ter mais de 20 caracteres!"));				
+					}else if(partes[1].length() > 100){//para impedir de enviar mensagens grandes
+						clienteConectado.enviarMensagem(TipoMensagem.ERRO+UI.estilizarMensagem('R', "A mensagem nao pode ter mais de 100 caracteres!"));
 					}
 					else{
 						broadcast(TipoMensagem.GERAL +  UI.estilizarMensagem('Y', "<" + nomeUsuario + "> ") + partes[1]); // envia mensagem para broadcast
