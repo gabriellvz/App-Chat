@@ -33,7 +33,7 @@ public class Servidor {
 				String [] partesChatPrivado = mensagem.split(" ",2);
  				//verfificar se o cliente nao digitou nada(tamanho de partes<2) ou se ele digitou apenas espacos em branco
 				if(partesChatPrivado.length < 2 || partesChatPrivado[1].trim().isEmpty()) {
-					clienteConectado.enviarMensagem(TipoMensagem.ERRO+  UI.estilizarMensagem('R',"Digite no formato: /crs@nome_mensagem"));
+					clienteConectado.enviarMensagem(TipoMensagem.ERRO+  UI.estilizarMensagem('R',"mensagem vazia!"));
 				}
 			    else if(partesChatPrivado[1].length()>20){//para impedir de enviar mensagens grandes
 				clienteConectado.enviarMensagem(TipoMensagem.ERRO+UI.estilizarMensagem('R', "A mensagem nao pode ter mais de 20 caracteres!"));
@@ -43,7 +43,7 @@ public class Servidor {
 					//tenta enviar a mensagem
 					String destinatario = partesChatPrivado[0].substring(5);
 					//verificar se a mensagem nao eh pra ele mesmo
-					if(destinatario.equals(nomeUsuario)) {
+					if(destinatario.equalsIgnoreCase(nomeUsuario)) {
 						clienteConectado.enviarMensagem(TipoMensagem.ERRO+UI.estilizarMensagem('R', "Voce nao pode enviar uma mensagem privada para si mesmo."));
 					}else {
 						boolean mensagemChegou = enviarMensagemPrivada(nomeUsuario,destinatario,partesChatPrivado[1]);
