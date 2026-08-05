@@ -20,12 +20,10 @@ public class ClienteThread extends Thread{
 			// ler e imprime a mensagem equanto houver texto
 			while((mensagemServidor = reader.readLine()) != null) {
 				System.out.println(mensagemServidor);//printar a mensagem que o servidor enviou
-				//System.out.print("> ");
 			}
-		}catch(Exception ex) {
+		} catch(Exception ex) {
 			//excecao para o caso de o socket ser fechado intencionalmente,nao faz nada,apenas encerra a thread de forma silenciosa
-			if(ex.getMessage() != null && ex.getMessage().contains("Socket closed") || ex.getMessage().contains("Connection reset")) {
-				
+			if(ex.getMessage() != null && ex.getMessage().contains("Socket closed") || ex.getMessage().contains("Connection reset")) {			
 				//excecao para um erro real
 			}else {
 				ex.printStackTrace();
