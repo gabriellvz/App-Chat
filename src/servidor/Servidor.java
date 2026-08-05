@@ -30,24 +30,32 @@ public class Servidor {
 		if (mensagem.startsWith("/")){
 			
 			if(mensagem.startsWith("/crs@")) { //verifica se eh uma mensagem privada
-				 //corta os cinco primeiros caracteres pra pegar apenas o nome do destinatario
 				String [] partesChatPrivado = mensagem.split(" ",2);
  				//verfificar se o cliente nao digitou nada(tamanho de partes<2) ou se ele digitou apenas espacos em branco
 				if(partesChatPrivado.length < 2 || partesChatPrivado[1].trim().isEmpty()) {
 					clienteConectado.enviarMensagem(TipoMensagem.ERRO+  UI.estilizarMensagem('R',"Digite no formato: /crs@nome_mensagem"));
 				}
-				else {
-					
+			    else if(partesChatPrivado[1].length()>20){//para impedir de enviar mensagens grandes
+				clienteConectado.enviarMensagem(TipoMensagem.ERRO+UI.estilizarMensagem('R', "A mensagem nao pode ter mais de 20 caracteres!"));
+				
+			    }
+				else {				
 					//tenta enviar a mensagem
 					String destinatario = partesChatPrivado[0].substring(5);
-					boolean mensagemChegou = enviarMensagemPrivada(nomeUsuario,destinatario,partesChatPrivado[1]);
+					//verificar se a mensagem nao eh pra ele mesmo
+					if(destinatario.equals(nomeUsuario)) {
+						clienteConectado.enviarMensagem(TipoMensagem.ERRO+UI.estilizarMensagem('R', "Voce nao pode enviar uma mensagem privada para si mesmo."));
+					}else {
+						boolean mensagemChegou = enviarMensagemPrivada(nomeUsuario,destinatario,partesChatPrivado[1]);
+						
+						if(mensagemChegou) { //se a mensagem chegou ele confirma pro rementente
+							clienteConectado.enviarMensagem(TipoMensagem.PRIVADO+"voce para " + UI.estilizarMensagem('B', "<" + destinatario + "> ") + partesChatPrivado[1]);
+						}
+						else { //se a mensagem nao chegou ele confirma pro rementente
+							clienteConectado.enviarMensagem(TipoMensagem.ERRO + UI.estilizarMensagem('R', destinatario +" nao encontrado"));
+						}
+					}
 					
-					if(mensagemChegou) { //se a mensagem chegou ele confirma pro rementente
-						clienteConectado.enviarMensagem(TipoMensagem.PRIVADO+"voce para " + UI.estilizarMensagem('B', "<" + destinatario + "> ") + partesChatPrivado[1]);
-					}
-					else { //se a mensagem nao chegou ele confirma pro rementente
-						clienteConectado.enviarMensagem(TipoMensagem.ERRO + UI.estilizarMensagem('R', destinatario +" nao encontrado"));
-					}
 				}
 			}else {// se nao for uma mensagem privada continua procurando nos outro comandos
 				switch (partes[0]){
@@ -59,6 +67,9 @@ public class Servidor {
 				case "/msg":
 					if (partes.length < 2 || partes[1].trim().isEmpty()){ // trim remove espacos, is empty verifica se o tamanho eh 0
 						clienteConectado.enviarMensagem(TipoMensagem.ERRO + UI.estilizarMensagem('R',"Digite uma mensagem apos /msg."));
+					}else if(partes[1].length()>20){//para impedir de enviar mensagens grandes
+						clienteConectado.enviarMensagem(TipoMensagem.ERRO+UI.estilizarMensagem('R', "A mensagem nao pode ter mais de 20 caracteres!"));
+						
 					}
 					else{
 						broadcast(TipoMensagem.GERAL +  UI.estilizarMensagem('Y', "<" + nomeUsuario + "> ") + partes[1]); // envia mensagem para broadcast
@@ -82,26 +93,8 @@ public class Servidor {
 	    }
 	}
 
-	// metodo responsavel por retornar um boolean para saber se um nome ja esta presente na lista
-	public static boolean nomeJaExiste (String nome){
-		for (ServidorThread c : clientesConectados){
-			if (nome.equalsIgnoreCase(c.getNomeUsuario())){ // equalsIgnoreCase compara desconsiderando entre maiusculas e minusculas
-				return true;
-			}
-		}
-		return false;
-	}
-
-	/*
-	* Syncronized foi adicionado aos metodos que fazer acesso a lista de clientes conectados
-	* para evitar problemas de conconrrencias entre as threads.
-	*
-	* As threads fazem acesso a um recurso compartilhado em comum, a lista clientesConectados
-	* Syncronized evita que duas ou mais threads acessem a lista ao mesmo tempo
-	* */
-
 	// metodo responsavel por listar nomes dos usuarios conectados
-	public static synchronized String listarUsuariosConectados(){
+	public static String listarUsuariosConectados(){
 		StringBuilder sb = new StringBuilder(); // stringBuilder serve para formatar saidas convertidas para string
 		int i = 0; // indice
 		sb.append("\n" + TipoMensagem.LISTA + UI.estilizarMensagem('C',"Usuarios conectados: ") + "\n");
@@ -112,31 +105,39 @@ public class Servidor {
 		return sb.toString(); // retorna um objeto sb que converte a saida para string
 	}
 
+	// metodo responsavel por retornar um boolean para saber se um nome ja esta presente na lista
+	public static boolean nomeJaExiste (String nome){
+		for (ServidorThread c : clientesConectados){
+			if (nome.equalsIgnoreCase(c.getNomeUsuario())){ // equalsIgnoreCase compara desconsiderando entre maiusculas e minusculas
+				return true;
+			}
+		}
+		return false;
+	}
 
-	public static synchronized void adicionar(ServidorThread s){
+	public static void adicionar(ServidorThread s){
 		clientesConectados.add(s);
 	}
 
-	public static synchronized void remover(ServidorThread s){
+	public static void remover(ServidorThread s){
 		clientesConectados.remove(s);
 	}
 
 	// metodo responsavel por enviar a mensagem para todos clientes conectados
 	// o metodo percorre a lista de clientes conectados e envia uma mensagem a todas as trheads ativas
-	public static synchronized void broadcast (String mensagem){
+	public static void broadcast (String mensagem){
 		for (ServidorThread c : clientesConectados){
 			c.enviarMensagem(mensagem);
 		}
 	}
 	
-	public static synchronized boolean enviarMensagemPrivada(String remetente,String destinatario,String mensagem) {
+	public static boolean enviarMensagemPrivada(String remetente,String destinatario,String mensagem) {
 		for(ServidorThread cliente : clientesConectados) {//percorre a lista de clientes conectados e envia mensagem somente pro que tiver o nome correspondente
 			if(cliente.getNomeUsuario().equalsIgnoreCase(destinatario)) {
 				cliente.enviarMensagem(TipoMensagem.PRIVADO + UI.estilizarMensagem('B', "<"+ remetente + "> ") +mensagem);
 				return true;
 			}
-		}
-		return false;//se nao encontrar ninguem retorna falso
+		}return false;//se nao encontrar ninguem retorna falso
 	}
 
 	public static boolean sairDoChat() {
