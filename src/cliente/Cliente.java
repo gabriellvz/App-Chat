@@ -12,6 +12,7 @@ import protocolo.UI;
 
 public class Cliente {
 
+	// metodo responsavel por tentar estabelecer a conexao com o cliente atraves do socket
 	private static Socket conectar (Scanner scanner){
 		Socket socket;
 		while(true){
