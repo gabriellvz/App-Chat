@@ -89,7 +89,7 @@ public class Servidor {
 	    }
 	    // se a mensagem nao for um comando
 		else {
-			clienteConectado.enviarMensagem(TipoMensagem.ERRO + UI.estilizarMensagem('R',"Digite um comando valido."));
+			clienteConectado.enviarMensagem(TipoMensagem.ERRO + UI.estilizarMensagem('R',"Entrada invalida"));
 	    }
 	}
 
@@ -154,7 +154,7 @@ public class Servidor {
         try {
         	ServerSocket serverSocket = new ServerSocket(4000);//inicia um servidor de rede e abre a porta 4000 para se conectar com um cliente
 			while(true) {
-    			System.out.println(UI.estilizarMensagem('G',TipoMensagem.SERVIDOR + "aguardando conexao..."));
+    			System.out.println(TipoMensagem.SERVIDOR + UI.estilizarMensagem('G',"aguardando conexao..."));
         		
         		Socket socket = serverSocket.accept();//pausa a execucao, espera um cliente se conectar e retorna um socket
 
@@ -167,10 +167,8 @@ public class Servidor {
         		//serverSocket.close(); criar um if para fechar a conexao
     		}		
         }catch(java.net.BindException portaOcupada) {
-        	System.out.println("A porta ja esta em uso! verifique se voce nao deixou o servidor rodando em outro terminal");
+        	System.out.println(UI.estilizarMensagem('R',TipoMensagem.ERRO + "A porta ja esta em uso! verifique se voce nao deixou o servidor rodando em outro terminal"));
 
-        	
-        	
 		}catch(IOException ex) {
 			ex.printStackTrace();
 			
