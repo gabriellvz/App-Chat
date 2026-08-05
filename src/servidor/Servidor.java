@@ -1,10 +1,4 @@
-//package clienteServidor;
-
 package servidor;
-
-//import cliente.ClienteThread;
-
-//import protocolo.TipoMensagem;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -92,7 +86,7 @@ public class Servidor {
 	}
 
 	/*
-	 * Syncronized foi adicionado aos metodos que fazer acesso a lista de clientes conectados
+	 * Syncronized foi adicionado aos metodos que fazem acesso a lista de clientes conectados
 	 * para evitar problemas de conconrrencias entre as threads.
 	 *
 	 * As threads fazem acesso a um recurso compartilhado em comum, a lista clientesConectados
