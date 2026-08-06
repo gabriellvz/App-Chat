@@ -163,7 +163,7 @@ Este projeto foi desenvolvido para praticar:
 
 ## 👨‍💻 Autores
 
-- @gabriellvz
-- @Emerson484 
+- [@gabriellvz](https://github.com/gabriellvz)
+- [@Emerson484](https://github.com/Emerson484) 
 
 ---
