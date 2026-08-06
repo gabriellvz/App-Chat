@@ -163,8 +163,6 @@ Este projeto foi desenvolvido para praticar:
 
 ## 👨‍💻 Autores
 
-Projeto desenvolvido para a disciplina de Redes de Computadores.
-
 - [@gabriellvz] (https://github.com/gabriellvz)
 - [@Emerson484] (https://github.com/Emerson484)
 
